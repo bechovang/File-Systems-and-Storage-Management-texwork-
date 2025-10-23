@@ -1,0 +1,66 @@
+# LaTeX auxiliary files
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.fmt
+*.fot
+*.cb
+*.cb2
+.*.lb
+
+# Intermediate documents
+*.dvi
+*.xdv
+*.bbl
+*.bcf
+*.blg
+*.run.xml
+*.synctex.gz
+*.synctex(busy)
+*.fdb_latexmk
+*.fls
+
+# Bibliography tools
+*.bbl
+*.blg
+*.brf
+
+# Glossaries, indexes
+*.glo
+*.gls
+*.glg
+*.ist
+*.acn
+*.acr
+*.alg
+*.glg-*
+*.glo-*
+*.gls-*
+
+# Latexmk and other tooling
+latexmkrc
+*.latexmk
+
+# Editors and OS
+.DS_Store
+Thumbs.db
+~$*
+*.bak
+*.swp
+*.swo
+
+# PDF output (keep if you want versioned PDFs; comment to track PDFs)
+*.pdf
+
+# Generated images
+*.eps
+*.ps
+*.nav
+*.snm
+
+# Project-specific
+/build/
