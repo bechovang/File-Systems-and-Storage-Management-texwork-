@@ -77,18 +77,21 @@
     {\large
         Nguyen Ngoc Phuc - SE203055 \\
         Dam Le Tuan Anh - SE204111\\
-        Nguyen Quang Son - SE171738\\
     }
     
+    \vspace{1.5cm}
     
     {\large FPT University\par} % Thêm Affiliation
     
+    \vspace{1.5cm}
     
     {\large OSG202 – Operating Systems\par}
     
+    \vspace{1.5cm}
     
     {\large Le Bao Duy\par}
     
+    \vspace{1.5cm}
     
     {\large October 24, 2025\par}
     
