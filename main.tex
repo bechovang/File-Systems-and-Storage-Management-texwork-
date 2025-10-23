@@ -118,23 +118,25 @@
 \section{Introduction}
 The 21st century has been marked by an explosion of digital information never before seen. As stated in the seminal works on storage management, newer technologies such as social networks or mobile devices are constantly producing a huge amount of data, creating what has been described as the ``expanding digital universe'' \parencite{EMC2012InformationStorage}.This exponential growth not only presents a challenge in terms of storage capacity but also places immense pressure on operating systems, requiring them to manage and retrieve data both efficiently and reliably.
 
-Trong bối cảnh đó, việc quản lý hiệu năng của các thiết bị lưu trữ đã trở thành một khía cạnh cốt lõi và là một "nút thắt cổ chai" quan trọng trong kiến trúc hệ thống máy tính hiện đại \parencite{Pokharel2021}. Thách thức không chỉ đơn thuần là lưu trữ dữ liệu, mà là tổ chức, bảo vệ và truy xuất chúng một cách nhanh chóng. Nằm ở trung tâm của thách thức này chính là \textbf{hệ thống file (file system)} – lớp trừu tượng cơ bản đóng vai trò là cầu nối quan trọng giữa các ứng dụng của người dùng và phần cứng lưu trữ vật lý \parencite{Silberschatz2018}. Lịch sử phát triển của hệ điều hành đã chứng kiến sự tiến hóa của các hệ thống file, từ những cấu trúc đơn giản như Bảng Cấp phát Tập tin (File Allocation Table - FAT) phù hợp cho máy tính cá nhân thời kỳ đầu, đến các hệ thống ghi nhật ký (journaling) phức tạp và mạnh mẽ như Hệ thống Tệp Công nghệ Mới (New Technology File System - NTFS) và Hệ thống Tệp Mở rộng phiên bản thứ tư (Fourth Extended Filesystem - ext4). Mỗi thế hệ mới đều mang đến những cải tiến quan trọng về hiệu năng, độ tin cậy và các tính năng nâng cao để đáp ứng nhu cầu ngày càng tăng của thế giới số \parencite{Tanenbaum2014}.
+Therefore, store devices performance control is now the focus issue and most critical bottleneck in contemporary computer system design \parencite{Pokharel2021}. The goal isn’t just to save data, but also organize it, protect and make it easily retrievable. The underlying problem is at the \textbf{file system}, the essential abstraction that mediates between application software on one hand and storage hardware on the other \parencite{Silberschatz2018}. The design and development of file systems is one among many aspects studied in the history of operating system emulation: from the largely retrograde File Allocation Table (FAT) only suitable for early personal computers to the robust, journaling NTFS and ext4, complexity has not been absent enctype. Performance, Reliability, and Advanced Features Every new generation exhibits impressive progress in performance, reliability, and other advanced features to cope with growing needs of the digital age \parencite{Tanenbaum2014}.
 
-Để khảo sát một cách toàn diện lĩnh vực quan trọng này, báo cáo này đặt ra sáu mục tiêu chính như sau:
+
+To study this important domain to the fullest extent, we formulate the following six leading aims of this paper:
 \begin{enumerate}
-    \item Định nghĩa và phân tích các khái niệm nền tảng của hệ thống file, bao gồm tệp, thư mục, siêu dữ liệu (metadata) và cấu trúc khối (block).
-    \item Giải thích và so sánh các kiến trúc thiết kế của ba hệ thống file tiêu biểu: FAT, ext4, và NTFS.
-    \item Đánh giá và đối chiếu các phương pháp cấp phát không gian lưu trữ chính: liên tục (contiguous), nối kết (linked), và theo chỉ mục (indexed).
-    \item Phân tích các thuật toán lập lịch truy xuất đĩa (disk I/O scheduling) phổ biến: FCFS, SSTF, SCAN, và C-SCAN.
-    \item Mô tả các kỹ thuật then chốt nhằm tăng cường hiệu năng và độ tin cậy của hệ thống, bao gồm lưu đệm (caching), tạo vùng đệm (buffering), và ghi nhật ký (journaling).
-    \item Thực hiện một nghiên cứu điển hình (case study) chuyên sâu về một hệ thống file đang được sử dụng rộng rãi trong thực tế: NTFS của Windows hoặc ext4 của Linux.
+    \item To articulate and analyze the elementary concepts of a file system: files, directories, meta-data, and blocks.
+    \item To describe and contrast structures of three typical file systems: FAT, ext4, NTFS.
+    \item Definition of Problem To compare and contrast the principal strategies implemented for allocating space to storage: contiguous, linked, and indexed.
+    \item To study the different disk I/O scheduling algorithms: FCFS, SSTF, SCAN and C-SCAN.
+    \item To explain the fundamental system acceleration and reliability techniques: caching, buffering and journaling.
+    \item To perform a deep-dive case study of one real-world, heavily-used file system: Windows’ NTFS or Linux’s ext4.
 \end{enumerate}
 
-Báo cáo được cấu trúc để xây dựng kiến thức một cách tuần tự. Phần 2 sẽ thiết lập nền tảng lý thuyết bằng cách tổng quan các khái niệm cốt lõi và các công nghệ liên quan. Phần 3 sẽ trình bày một bản phân tích so sánh chi tiết và một nghiên cứu điển hình chuyên sâu để minh họa các ứng dụng thực tế. Phần 4 sẽ bàn luận về các ý nghĩa rộng hơn, các sự đánh đổi trong thiết kế và tác động của công nghệ lưu trữ hiện đại. Cuối cùng, Phần 5 sẽ tóm tắt các kết quả chính và đưa ra góc nhìn tổng kết về tương lai của lĩnh vực quản lý lưu trữ.
+The report is organized as a constructive sequence of ideas. We introduce the theoretical background in Section 2 with a focus on relevant concepts and technologies. We provide a more detailed comparison and an in-depth case study illustrating the impact of our technique on real-world use casesin Section 3. In Section 4 we cover the wider implications, trade-offs, and how modern storage technologies can be exploited. Section 5 finally concludes the paper and provides prospects for future development of storage management research.
+
 
 \section{Background / Literature Review}
 %======================================================================
-% PHẦN 2.1: CÁC KHÁI NIỆM CƠ BẢN
+% Section 2.1: Fundamental Concepts
 %======================================================================
 
 \subsection{Fundamental Concepts}
