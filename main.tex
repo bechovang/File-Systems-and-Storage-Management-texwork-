@@ -346,11 +346,11 @@ Journaling file systems typically implement three different operating modes, whi
 %======================================================================
 
 \subsection{Comparative Analysis}
-
-Sau khi đã khảo sát các khái niệm lý thuyết và kiến trúc cơ bản của ba hệ thống file tiêu biểu trong Phần 2, phần này sẽ tiến hành tổng hợp và so sánh trực tiếp các đặc tính của chúng dựa trên các tiêu chí quan trọng về hiệu năng, độ tin cậy, bảo mật và các trường hợp sử dụng thực tế. Phân tích này sẽ làm nổi bật sự đánh đổi (trade-offs) giữa các thiết kế và tạo tiền đề cho phần nghiên cứu điển hình chuyên sâu về NTFS.
+After surveying the theoretical concepts and basic architectures of the three representative file systems in Section 2, this section will proceed to synthesize and directly compare their characteristics based on the critical criteria of performance, reliability, security, and practical use cases. This analysis will highlight the trade-offs between the designs and lay the groundwork for the in-depth case study on NTFS.
 
 \subsubsection{Performance Comparison}
-Hiệu năng của một hệ thống file phụ thuộc rất lớn vào cách nó quản lý việc cấp phát khối và metadata. Dựa trên kiến trúc, chúng ta có thể so sánh hiệu năng lý thuyết của FAT32, ext4 và NTFS trong các kịch bản sau:
+The performance of a file system is highly dependent on how it manages block allocation and metadata. Based on their architectures, we can compare the theoretical performance of FAT32, ext4, and NTFS in the following scenarios:
+
 \begin{itemize}
     \item \textbf{Truy cập tuần tự (Sequential Access):} Cả ext4 và NTFS đều cho hiệu năng vượt trội trong kịch bản này. ext4 sử dụng cơ chế \textbf{extents}, cho phép nó cấp phát các dải khối lớn và liền kề, giảm thiểu đáng kể chuyển động của đầu đọc \parencite{Dhjaku2019}. NTFS cũng có các thuật toán cấp phát thông minh để giữ cho các file lớn càng liền kề càng tốt. Ngược lại, FAT32, với bản chất danh sách liên kết, rất dễ bị phân mảnh, khiến cho việc đọc một file lớn, tuần tự có thể yêu cầu nhiều thao tác tìm kiếm (seek) tốn kém.
 
@@ -449,47 +449,25 @@ Các hệ thống file truyền thống, với các cơ chế như journaling v�
 %======================================================================
 
 \section{Conclusion}
-Báo cáo này đã thực hiện một cuộc khảo sát toàn diện về các nguyên tắc cơ bản và các kỹ thuật nâng cao trong lĩnh vực quản lý hệ thống file và lưu trữ của hệ điều hành. Qua việc phân tích lý thuyết, so sánh các kiến trúc, và thực hiện một nghiên cứu điển hình, các mục tiêu đề ra ban đầu đã được hoàn thành một cách có hệ thống.
+The present report covers the basics and advanced features of OS file and storage management. Through theoretical analysis, architectural comparison and a case study, the stated objectives at the beginning have been systematically reached. 
 
 \subsection{Summary of Findings}
-Báo cáo đã đáp ứng đầy đủ sáu yêu cầu cốt lõi của đề tài, từ việc \textbf{định nghĩa} các khái niệm nền tảng, \textbf{giải thích} và \textbf{so sánh} các kiến trúc hệ thống file và phương pháp cấp phát, \textbf{phân tích} các thuật toán lập lịch I/O, \textbf{mô tả} các kỹ thuật tối ưu hóa, cho đến việc tiến hành một \textbf{nghiên cứu điển hình} chuyên sâu về NTFS. Các sản phẩm được yêu cầu là Sơ đồ ánh xạ logic-vật lý và Bảng so sánh các hệ thống file cũng đã được tích hợp và trình bày trong báo cáo.
+The report covers all six core topic demands, beginning by defining basic concepts, describing and comparing file system structures and space allocation, over I/O scheduling algorithms, to file system optimization techniques, and finally to a comprehensive case study on NTFS. The two required deliverables, the Logical-to-physical mapping diagram and the Comparative table of file systems, have been incorporated and presented in the report.
 
 \subsection{Broader Implications and Future Outlook}
-Phân tích đã chỉ ra rằng lĩnh vực quản lý lưu trữ đang trong một giai đoạn chuyển đổi sâu sắc, được thúc đẩy bởi sự thay đổi trong công nghệ phần cứng. Các hệ thống file không còn có thể hoạt động như một lớp trừu tượng hoàn toàn độc lập với thiết bị bên dưới. Thay vào đó, một tương lai hợp tác chặt chẽ hơn giữa hệ điều hành và bộ điều khiển lưu trữ là tất yếu.
+The results show that storage management is undergoing a fundamental transformation, motivated by hardware technology evolution. File systems can no longer be considered a completely isolated abstraction layer above the device. Rather, the future is going to entail more cooperation between the operating system and the storage controller.
 
-Các hệ thống file thế hệ mới đang dẫn đầu xu hướng này bằng cách tích hợp các tính năng được thiết kế đặc biệt để giải quyết các thách thức về quy mô và tính toàn vẹn dữ liệu trên các phương tiện lưu trữ hiện đại.
+Next generation file systems are spearheading this trend by developing features to effectively deal with the problems of scale and data integrity in the new storage media.
 \begin{itemize}
-    \item \textbf{ZFS và Btrfs} đã trở nên phổ biến nhờ vào các tính năng đột phá. Cả hai đều sử dụng cơ chế \textbf{copy-on-write (CoW)}, giúp tạo snapshot và clone một cách cực kỳ hiệu quả. Quan trọng hơn, chúng tích hợp \textbf{checksum} cho cả dữ liệu và metadata ở mọi cấp độ, cho phép tự động phát hiện và sửa chữa các lỗi dữ liệu thầm lặng (silent data corruption) khi được sử dụng cùng với các cấu hình dự phòng (như mirroring hoặc RAID-Z). Chúng cũng hợp nhất việc quản lý volume và hệ thống file, mang lại sự linh hoạt cao hơn \parencite{Nfina2025BtrfsZFS}.
-    \item \textbf{ReFS (Resilient File System)} của Microsoft cũng theo đuổi một triết lý tương tự, được định vị là người kế nhiệm của NTFS trong các môi trường máy chủ đòi hỏi tính toàn vẹn và khả năng phục hồi cao. ReFS sử dụng "luồng toàn vẹn" (integrity streams) để xác thực và tự động sửa chữa dữ liệu khi được kết hợp với Storage Spaces. Các tính năng như nhân bản khối (block cloning) và VDL thưa (sparse VDL) giúp tăng tốc đáng kể các hoạt động trên máy ảo, cho thấy sự tập trung rõ rệt vào các workload hiện đại \parencite{Microsoft2025ReFS}.
+    \item \textbf{ZFS and Btrfs} have received wider acceptance because of their groundbreaking capabilities. Both leverage a \textbf{copy-on-write (CoW)} technique, which greatly enhances snapshot and cloning production. More importantly, they employ \textbf{checksums} for both data and metadata at every layer, enabling silent data corruption to be automatically detected and, if run in redundant setups (like mirroring or RAID-Z), repairs can be automatically attempted. They also combine volume and file system management for increased flexibility \parencite{Nfina2025BtrfsZFS}.
+    \item \textbf{ReFS (Resilient File System)} of Microsoft, which also follows the same philosophy and is supposed to replace NTFS as the file system for servers where integrity and resiliency is paramount. ReFS relies on "integrity streams" which allows for data to be validated and auto-corrected on ReFS when used with Storage Spaces. Features such as block cloning and sparse VDL are also much faster for virtual machine operations clearly prioritizing modern workloads \parencite{Microsoft2025ReFS}.
 \end{itemize}
-Những hệ thống này báo hiệu một tương lai nơi việc quản lý lưu trữ không chỉ nhanh hơn, mà còn thông minh hơn, linh hoạt hơn, và trên hết là đáng tin cậy hơn, có khả năng tự bảo vệ dữ liệu trước các lỗi phần cứng và phần mềm không thể tránh khỏi.
+These technologies point to a future in which storage management is not only faster but also more intelligent, flexible and, perhaps most important of all, more reliable, in that it will be able to self-protect its data from the hardware and software failures of the day. 
 
 
 
 
 
-% Nội dung của phần Phân tích và Nghiên cứu điển hình...
-
-%     \subsection{Comparative Analysis}
-%     Tổng hợp so sánh từ Phần 2...
-
-%     \subsection{Case Study: NTFS Architecture}
-%     Phân tích sâu về NTFS, MFT, LogFile...
-
-% \section{Discussion}
-% Nội dung của phần Bàn luận...
-
-%     \subsection{Key Findings Interpretation}
-%     Diễn giải các kết quả chính...
-    
-%     \subsection{Design Trade-offs}
-%     Phân tích các sự đánh đổi...
-    
-%     \subsection{Impact of Modern Storage (SSD/NVMe)}
-%     Bàn luận về tác động của SSD...
-
-% \section{Conclusion}
-% Nội dung của phần Kết luận...
 
 % --- PHẦN TÀI LIỆU THAM KHẢO ---
 \newpage
