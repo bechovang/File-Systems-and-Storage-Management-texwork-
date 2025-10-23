@@ -112,23 +112,33 @@
 \vspace{1\baselineskip} % Thêm một khoảng trống nhỏ sau tiêu đề
 
 \section{Introduction}
-The 21st century has been marked by an explosion of digital information never before seen. As stated in the seminal works on storage management, newer technologies such as social networks or mobile devices are constantly producing a huge amount of data, creating what has been described as the ``expanding digital universe'' \parencite{EMC2012InformationStorage}.This exponential growth not only presents a challenge in terms of storage capacity but also places immense pressure on operating systems, requiring them to manage and retrieve data both efficiently and reliably.
+
+Digital information growth is characterizing the 21st century and was never before witnessed. As stated in the seminal works on storage management, newer technologies such as social networks or mobile devices are constantly producing a huge amount of data, creating what has been described as the ``expanding digital universe'' \parencite{EMC2012InformationStorage}.
 
 Therefore, store devices performance control is now the focus issue and most critical bottleneck in contemporary computer system design \parencite{Pokharel2021}. The goal isn’t just to save data, but also organize it, protect and make it easily retrievable. The underlying problem is at the \textbf{file system}, the essential abstraction that mediates between application software on one hand and storage hardware on the other \parencite{Silberschatz2018}. The design and development of file systems is one among many aspects studied in the history of operating system emulation: from the largely retrograde File Allocation Table (FAT) only suitable for early personal computers to the robust, journaling NTFS and ext4, complexity has not been absent enctype. Performance, Reliability, and Advanced Features Every new generation exhibits impressive progress in performance, reliability, and other advanced features to cope with growing needs of the digital age \parencite{Tanenbaum2014}.
 
 
+
+
 To study this important domain to the fullest extent, we formulate the following six leading aims of this paper:
+
 \begin{enumerate}
-    \item To articulate and analyze the elementary concepts of a file system: files, directories, meta-data, and blocks.
-    \item To describe and contrast structures of three typical file systems: FAT, ext4, NTFS.
-    \item Definition of Problem To compare and contrast the principal strategies implemented for allocating space to storage: contiguous, linked, and indexed.
-    \item To study the different disk I/O scheduling algorithms: FCFS, SSTF, SCAN and C-SCAN.
-    \item To explain the fundamental system acceleration and reliability techniques: caching, buffering and journaling.
-    \item To perform a deep-dive case study of one real-world, heavily-used file system: Windows’ NTFS or Linux’s ext4.
+
+  \item Describe and discuss the basic ideas of a file system: files, directories, meta-data, and blocks.
+
+  \item Describe and contrast structures of three typical file systems: FAT, ext4, NTFS.
+
+  \item Compare and contrast the main methods used for storage space allocation: contiguous, linked, and indexed.
+
+  \item Study the different disk I/O scheduling algorithms: FCFS, SSTF, SCAN and C-SCAN.
+
+  \item Describe the basic system performance and reliability methods - caching, buffering and logging.
+
+  \item Do an in-depth case study of one actual heavily-used file system in the wild: Windows’ NTFS or Linux’s ext4.
+
 \end{enumerate}
 
-The report is organized as a constructive sequence of ideas. We introduce the theoretical background in Section 2 with a focus on relevant concepts and technologies. We provide a more detailed comparison and an in-depth case study illustrating the impact of our technique on real-world use casesin Section 3. In Section 4 we cover the wider implications, trade-offs, and how modern storage technologies can be exploited. Section 5 finally concludes the paper and provides prospects for future development of storage management research.
-
+The report is structured as a positive sequence of thought. Theoretical background: Section 2 Theoretical background is focussed on concepts and technologies that are relevant. We also give a fuller comparison and a detailed case study demonstrating the effect of our technique on practical applications in section 3. In Section 4, we discuss the broader implications and trade-offs, and the potential for exploiting contemporary storage technologies. Section 5 concludes the paper, and provides future direction in storage management research.
 
 \section{Background / Literature Review}
 %======================================================================
