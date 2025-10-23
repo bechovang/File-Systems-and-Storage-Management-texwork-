@@ -403,7 +403,7 @@ Each MFT record has a set of attributes, which together fully describe the corre
 \end{itemize}
 
 \subsubsection{Analysis of Advanced Features}
-Ngoài kiến trúc MFT, sức mạnh của NTFS còn đến từ bộ tính năng doanh nghiệp phong phú được tích hợp sẵn.
+The power of NTFS – over and above its MFT architecture – also comes from its wealth of native enterprise capabilities.
 
 \paragraph{A. Journaling and Recovery (\texttt{\$LogFile}):}
 NTFS là một hệ thống file journaling hoàn chỉnh, đảm bảo tính nhất quán của volume ngay cả khi xảy ra sự cố đột ngột. Cơ chế này được triển khai thông qua một file metadata đặc biệt có tên là \textbf{\texttt{\$LogFile}} \parencite{Shafiei2012}. Không giống như ext3 sử dụng "physical logging" (ghi lại toàn bộ khối metadata bị thay đổi), NTFS triển khai một hình thức ghi nhật ký tinh vi hơn gọi là \textbf{operation logging} (hay redo/undo logging). Trong mô hình này, journal không ghi lại toàn bộ khối dữ liệu mà chỉ ghi lại các thao tác logic mô tả sự thay đổi ("redo" - làm lại) và cách để hoàn tác thay đổi đó ("undo" - làm lại) \parencite{HarvardCS161Journaling}. Khi một giao dịch được cam kết, hệ điều hành sẽ thực hiện các thay đổi. Nếu hệ thống gặp sự cố, trong quá trình phục hồi, NTFS sẽ quét \texttt{\$LogFile}, "redo" lại các giao dịch đã hoàn thành và "undo" các giao dịch chưa hoàn thành, đảm bảo metadata của hệ thống file nhanh chóng trở lại trạng thái nhất quán.
