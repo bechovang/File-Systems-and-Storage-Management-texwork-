@@ -77,7 +77,6 @@
     {\large
         Nguyen Ngoc Phuc - SE203055 \\
         Dam Le Tuan Anh - SE204111\\
-        Nguyen Quang Son\\
     }
     
     \vspace{1.5cm}
@@ -327,11 +326,11 @@ In order to solve this problem, modern file systems use a method called journali
 Journaling file systems typically implement three different operating modes, which represent the trade-off between performance and the level of data protection:
 
 \begin{itemize}
-    \item \textbf{Writeback Mode:} Đây là chế độ có hiệu năng cao nhất nhưng rủi ro nhất. Trong chế độ này, chỉ có metadata được ghi vào journal. Dữ liệu của file được ghi trực tiếp vào vị trí cố định của nó mà không có bất kỳ sự đồng bộ nào với việc ghi metadata. Điều này có nghĩa là metadata có thể được ghi trước hoặc sau dữ liệu. Nếu xảy ra sự cố, hệ thống file có thể phục hồi về trạng thái metadata nhất quán, nhưng dữ liệu của file có thể bị cũ hoặc chứa dữ liệu rác \parencite{Jones2008Anatomy}.
+    \item \textbf{Writeback Mode:} This is the highest-performance but riskiest mode. In this mode, only metadata is written to the journal. The file's data is written directly to its permanent location without any synchronization with the metadata write. This means the metadata can be written before or after the data. If a crash occurs, the file system can recover to a consistent metadata state, but the file's data might be old or contain garbage data \parencite{Jones2008Anatomy}.
 
-    \item \textbf{Ordered Mode:} Đây là chế độ mặc định trên hầu hết các hệ thống Linux (bao gồm cả ext3 và ext4) và là một sự cân bằng tốt giữa hiệu năng và an toàn. Tương tự như writeback, chỉ có metadata được ghi vào journal. Tuy nhiên, chế độ này áp đặt một trật tự ghi nghiêm ngặt: dữ liệu của file \textit{phải} được ghi vào vị trí cố định của nó \textit{trước khi} metadata liên quan đến nó được commit vào journal. Trật tự này đảm bảo rằng metadata sẽ không bao giờ trỏ đến các khối dữ liệu chưa được ghi hoặc chứa dữ liệu rác, do đó ngăn ngừa được tình trạng hỏng dữ liệu sau khi phục hồi, mặc dù vẫn có thể mất các cập nhật mới nhất \parencite{Prabhakaran2005journaling}.
+    \item \textbf{Ordered Mode:} This is the default for most Linux filesystems (ext3 and ext4) and provides a good compromise between performance and security. Similar to writeback, only metadata is actually written into the journal. This mode does, however, have a strict write ordering: data in the file \textit{must} be written to its ultimate destination \textit{before} its corresponding metadata is written into the journal. This structure is in the form that metadata will never point to garbage or unwritten data blocks and therefore prevent corruption of the data during recovery, though the most recent modifications could be lost. \parencite{Prabhakaran2005journaling}.
 
-    \item \textbf{Data Mode (Full Data Journaling):} Đây là chế độ an toàn nhất nhưng cũng chậm nhất. Trong chế độ này, cả \textbf{metadata và dữ liệu} của file đều được ghi vào journal trước khi được checkpoint. Điều này có nghĩa là mỗi khối dữ liệu được ghi hai lần: một lần vào journal và một lần vào vị trí cuối cùng của nó. Chế độ này đảm bảo tính nhất quán ở mức cao nhất; sau sự cố, file sẽ ở trạng thái cũ hoặc mới một cách toàn vẹn. Tuy nhiên, việc ghi kép này làm giảm đáng kể thông lượng ghi của hệ thống \parencite{Jones2008Anatomy}.
+    \item \textbf{Data Mode (Full Data Journaling):} This is the safest but slowest mode. Under this mode, both the file's \textbf{metadata and data} are written to the journal before checkpointing. That means each data block is written twice: once to the journal and the other to the destination. This mode gives the highest level of consistency; after a crash, the file will either be in its new or old state completely. However, this double-writing significantly reduces the system's write throughput \parencite{Jones2008Anatomy}.
 \end{itemize}
 
 
