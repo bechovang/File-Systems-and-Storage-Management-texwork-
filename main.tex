@@ -352,34 +352,34 @@ After surveying the theoretical concepts and basic architectures of the three re
 The performance of a file system is highly dependent on how it manages block allocation and metadata. Based on their architectures, we can compare the theoretical performance of FAT32, ext4, and NTFS in the following scenarios:
 
 \begin{itemize}
-    \item \textbf{Truy cập tuần tự (Sequential Access):} Cả ext4 và NTFS đều cho hiệu năng vượt trội trong kịch bản này. ext4 sử dụng cơ chế \textbf{extents}, cho phép nó cấp phát các dải khối lớn và liền kề, giảm thiểu đáng kể chuyển động của đầu đọc \parencite{Dhjaku2019}. NTFS cũng có các thuật toán cấp phát thông minh để giữ cho các file lớn càng liền kề càng tốt. Ngược lại, FAT32, với bản chất danh sách liên kết, rất dễ bị phân mảnh, khiến cho việc đọc một file lớn, tuần tự có thể yêu cầu nhiều thao tác tìm kiếm (seek) tốn kém.
+    \item \textbf{Sequential Access:} Both NTFS and ext4 exhibit superior performance in this regard. ext4 is utilizing the \textbf{extents} feature, which allows it to allocate large, consecutive sets of blocks, significantly minimizing head movement \parencite{Dhjaku2019}. NTFS is likewise employing clever allocation algorithms for storing large files as contiguous as possible. FAT32, being based on a linked list, is highly prone to fragmentation, and reading a large, sequential file can entail many costly seek operations.
 
-    \item \textbf{Truy cập ngẫu nhiên (Random Access):} Các hệ thống file dựa trên chỉ mục như ext4 và NTFS lại chiếm ưu thế. Cấu trúc inode với các con trỏ đa cấp của ext4 và kiến trúc MFT tập trung của NTFS cho phép hệ thống nhanh chóng định vị bất kỳ khối dữ liệu nào của file chỉ qua một vài lần truy cập metadata. FAT32, một lần nữa, tỏ ra yếu thế vì việc truy cập một khối ở giữa file đòi hỏi phải duyệt qua chuỗi con trỏ từ đầu \parencite{Silberschatz2018}.
+    \item \textbf{Random Access:} Index-based file systems like ext4 and NTFS excel here. The inode structure with its multi-level pointers in ext4 and the centralized MFT architecture of NTFS allow the system to quickly locate any data block of a file with just a few metadata lookups. FAT32, once again, falls short because accessing a block in the middle of a file requires traversing the chain of pointers from the beginning \parencite{Silberschatz2018}.
 
-    \item \textbf{Xử lý file nhỏ:} NTFS có một lợi thế đặc biệt với các file rất nhỏ nhờ tính năng \textbf{dữ liệu nội trú (resident data)}. Nếu dữ liệu của một file đủ nhỏ, nó có thể được lưu trữ trực tiếp bên trong bản ghi MFT của file đó, loại bỏ hoàn toàn nhu cầu truy cập vào các khối dữ liệu bên ngoài và mang lại tốc độ truy cập cực nhanh \parencite{Tanenbaum2014}. ext4 cũng xử lý file nhỏ hiệu quả bằng cách cố gắng gom chúng vào cùng một block group để tăng tính cục bộ (locality).
+    \item \textbf{Handling small files:} NTFS has a unique advantage with very small files thanks to its \textbf{resident data} feature. If a file's data is small enough, it can be stored directly inside that file's MFT record, completely eliminating the need to access external data blocks and providing extremely fast access speeds \parencite{Tanenbaum2014}. ext4 also handles small files efficiently by attempting to group them into the same block group to increase locality.
 
-    \item \textbf{Xử lý file lớn:} Giới hạn kích thước file 4GB của FAT32 khiến nó không còn phù hợp. Cả ext4 và NTFS đều hỗ trợ kích thước file và phân vùng cực lớn, lên đến hàng Terabyte và Exabyte, đáp ứng tốt các nhu-cầu lưu trữ hiện đại \parencite{Dhjaku2019}.
+    \item \textbf{Handling large files:} The 4GB file size limit of FAT32 makes it unsuitable. Both ext4 and NTFS support extremely large file and volume sizes, up to terabytes and exabytes, respectively, effectively meeting modern storage demands \parencite{Dhjaku2019}.
 \end{itemize}
 
 \subsubsection{Security and Reliability}
-Về độ tin cậy và bảo mật, sự khác biệt giữa các hệ thống file là rất rõ rệt.
+Regarding reliability and security, the differences between the file systems are very distinct.
 \begin{itemize}
-    \item \textbf{Độ tin cậy (Reliability):} Lợi thế lớn nhất của ext4 và NTFS so với FAT32 là việc hỗ trợ \textbf{journaling}. Như đã phân tích ở Mục 2.5.3, cơ chế ghi nhật ký đảm bảo rằng hệ thống file có thể nhanh chóng phục hồi về một trạng thái nhất quán sau sự cố đột ngột, giảm thiểu nguy cơ hỏng cấu trúc metadata và rút ngắn đáng kể thời gian kiểm tra đĩa (fsck) khi khởi động lại \parencite{Prabhakaran2005journaling}. FAT32 không có cơ chế này, khiến nó dễ bị lỗi và mất dữ liệu hơn.
-
-    \item \textbf{Bảo mật (Security):} FAT32 chỉ cung cấp các cơ chế bảo mật rất cơ bản ở cấp độ chia sẻ (share-level). Ngược lại, ext4 và NTFS đều được xây dựng cho các hệ điều hành đa người dùng. ext4 sử dụng mô hình phân quyền \textbf{POSIX} kinh điển của UNIX, định nghĩa quyền truy cập cho ba lớp: người sở hữu (owner), nhóm sở hữu (group), và những người khác (other). Trong khi đó, NTFS triển khai một mô hình linh hoạt và mạnh mẽ hơn nhiều gọi là \textbf{Access Control Lists (ACLs)}. Với ACLs, quản trị viên có thể gán hoặc từ chối các quyền cụ thể (đọc, ghi, thực thi, xóa, v.v.) cho nhiều người dùng và nhóm khác nhau trên cùng một file hoặc thư mục, cho phép kiểm soát truy cập ở mức độ chi tiết hơn hẳn \parencite{Bundele2018}.
+    \item \textbf{Reliability:} The most significant advantage of ext4 and NTFS over FAT32 is that they support \textbf{journaling}. As discussed in Section 2.5.3, the journaling mechanism enables the file system to recover quickly to a consistent state after an unanticipated crash, with little opportunity for corruption of metadata structures and a great reduction in disk check (fsck) time at reboot \parencite{Prabhakaran2005journaling}. FAT32 lacks this mechanism, making it more vulnerable to errors and data loss.
+    \item \textbf{Security:} FAT32 only has minimal security features at the share level. ext4 and NTFS were designed for multi-user OSes though. ext4 implements the traditional UNIX \textbf{POSIX} permission model to show access rights to three types of users: the owner, group, and others. NTFS, on the other hand, is based on a completely different, more complex and more powerful concept known as \textbf{Access Control Lists (ACLs)}. With ACL is possible to grant and revoke individual permissions (read, write, execute, delete, etc.) to users and groups over a file, or directory, with a granularity not achievable by standard UNIX permissions \parencite{Bundele2018}.
 \end{itemize}
+
 
 \subsubsection{Use Case Scenarios}
-Từ những phân tích trên, vai trò của mỗi hệ thống file trong các môi trường khác nhau được định hình rõ ràng:
+From the analysis above, the role of each file system in different environments is clearly defined:
 \begin{itemize}
-    \item \textbf{FAT32:} Mặc dù đã lỗi thời về mặt công nghệ, sự đơn giản và khả năng tương thích gần như toàn cầu giúp FAT32 (và người kế nhiệm là exFAT) vẫn là lựa chọn số một cho các thiết bị lưu trữ di động cần trao đổi dữ liệu giữa nhiều nền tảng khác nhau, như USB flash drives và thẻ nhớ SD.
+    \item \textbf{FAT32:} Although technologically obsolete, its simplicity and near-universal compatibility make FAT32 (and its successor, exFAT) the number one choice for portable storage devices that require data exchange between different platforms, such as USB flash drives and SD cards.
 
-    \item \textbf{ext4:} Là hệ thống file bản địa của hệ sinh thái Linux, ext4 là sự lựa chọn mặc định cho hầu hết mọi thứ, từ máy chủ doanh nghiệp, máy tính để bàn cho đến các thiết bị nhúng chạy Linux. Nó cung cấp một sự cân bằng tuyệt vời giữa hiệu năng, độ tin cậy và sự ổn định trong một môi trường mã nguồn mở.
+    \item \textbf{ext4:} As the native file system of the Linux ecosystem, ext4 is the default choice for almost everything, from enterprise servers and desktop computers to embedded devices running Linux. It provides an excellent balance of performance, reliability, and stability in an open-source environment.
 
-    \item \textbf{NTFS:} Là nền tảng không thể thiếu của hệ điều hành Windows. Với bộ tính năng doanh nghiệp phong phú, bao gồm bảo mật ACLs, mã hóa, nén dữ liệu và khả năng phục hồi mạnh mẽ, NTFS là lựa chọn mặc định cho các ổ đĩa hệ thống và dữ liệu trong môi trường Windows, đặc biệt là các máy trạm và máy chủ đòi hỏi độ tin cậy và khả năng quản trị cao.
+    \item \textbf{NTFS:} As the indispensable foundation of the Windows operating system, its rich set of enterprise features, including ACL security, encryption, data compression, and robust recovery capabilities, makes NTFS the default choice for system and data drives in Windows environments, especially for workstations and servers that demand high reliability and manageability.
 \end{itemize}
 
-Với việc đã thiết lập một cơ sở so sánh tổng quan, báo cáo sẽ tiếp tục đi sâu vào nghiên cứu điển hình về kiến trúc NTFS để minh họa chi tiết hơn các khái niệm đã được thảo luận.
+With a general comparative basis established, the report will now proceed with an in-depth case study of the NTFS architecture to illustrate the concepts that have been discussed in greater detail.
 
 
 %======================================================================
